@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Couse.Client")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aef73e2618561e3a20b8205f2926f265f2bbfef1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f50481cc51726c45c645f98987e5012ad7c16380")]
 [assembly: System.Reflection.AssemblyProductAttribute("Couse.Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Couse.Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

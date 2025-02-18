@@ -1,7 +1,9 @@
 ﻿using System.Collections.Concurrent;
+using System.IO.Pipes;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Xml;
 
 namespace Couse.API;
 
@@ -26,11 +28,19 @@ class Program
 
         while (true)
         {
-            // принимаем входящее подключение
-            var clientSocket = await serverSocket.AcceptAsync();
-            Console.WriteLine("Requesting...");
-            // явно не ждем
-            _ = Task.Run(() => HandleRequest(clientSocket));
+            try
+            {
+                // принимаем входящее подключение (клиентский сокет)
+                var clientSocket = await serverSocket.AcceptAsync();
+                Console.WriteLine("Requesting...");
+            
+                // явно не ждем
+                _ = Task.Run(() => HandleRequest(clientSocket));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 
@@ -46,35 +56,71 @@ class Program
         var request = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
         Console.WriteLine("Request: {0}", request);
 
-        var response = ProcessRequest(request);
+        // HARDCODE
+        if (Guid.TryParse(request, out var clientId))
+        {
+            _clients.TryAdd(clientId.ToString(), clientSocket);
+            return;
+        }
+        // HARDCODE
+
+        var payload = ParseSoapRequest(request);
+        
+        _clients.TryAdd(payload.senderId, clientSocket);
             
         var httpResponse =
             "HTTP/1.1 200 OK\r\n" +
             "Content-Type: text/xml; charset=utf-8\r\n" +
-            $"Content-Length: {Encoding.UTF8.GetByteCount(response)}\r\n" +
+            $"Content-Length: {Encoding.UTF8.GetByteCount(CreateResponse("123"))}\r\n" +
             "\r\n" +
-            response;
+            CreateResponse("123");
 
-        Console.WriteLine("Response {0}", httpResponse);
+        Console.WriteLine("Пользователи: ");
+        foreach (var id in _clients.Keys) {
+            Console.WriteLine("{0}", id);
+        }
+        
+        Console.WriteLine("\nResponse {0}", httpResponse);
             
-        clientSocket.Send(Encoding.UTF8.GetBytes(httpResponse));
+        // отправляем заданному клиенту
+        _clients[payload.receiverId].Send(Encoding.UTF8.GetBytes(httpResponse));
         clientSocket.Close();
     }
     
-
-    private static string ProcessRequest(string requestBody)
+    private static (string senderId, string receiverId, string message) ParseSoapRequest(string request)
     {
-        if (requestBody == string.Empty)
+        if (request == string.Empty)
         {
             Console.WriteLine("Request body is empty.");
             //return GetErrorResponse("Empty request body.");
         }
         
+        // парсинг xml
+        var xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(request);
         
-        // парсим request
-        return CreateResponse("Запрос обработан");
+        var senderIdNode = xmlDoc.SelectSingleNode("//soap:Header/SenderId", GetNamespaceManager(xmlDoc));
+        var senderId = senderIdNode?.InnerText
+            ?? throw new Exception("Sender ID is missing.");
+        
+        var receiverIdNode = xmlDoc.SelectSingleNode("//soap:Header/ReceiverId", GetNamespaceManager(xmlDoc));
+        var receiverId = receiverIdNode?.InnerText
+                       ?? throw new Exception("Receiver ID is missing.");
+        
+        var messageNode = xmlDoc.SelectSingleNode("//soap:Body/SendMessage/Message", GetNamespaceManager(xmlDoc));
+        var message = messageNode?.InnerText
+            ?? throw new Exception("Message is missing.");
+        
+        return (senderId, receiverId, message);
     }
-    
+
+    private static XmlNamespaceManager GetNamespaceManager(XmlDocument xmlDoc)
+    {
+        var manager = new XmlNamespaceManager(xmlDoc.NameTable);
+        manager.AddNamespace("soap", "http://schemas.xmlsoap.org/soap/envelope/");
+        return manager;
+    }
+
     private static string CreateResponse(string message)
     {
         return $"""

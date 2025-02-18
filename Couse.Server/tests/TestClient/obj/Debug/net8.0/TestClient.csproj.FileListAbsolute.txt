@@ -1,0 +1,15 @@
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\bin\Debug\net8.0\TestClient.exe
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\bin\Debug\net8.0\TestClient.deps.json
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\bin\Debug\net8.0\TestClient.runtimeconfig.json
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\bin\Debug\net8.0\TestClient.dll
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\bin\Debug\net8.0\TestClient.pdb
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\obj\Debug\net8.0\TestClient.GeneratedMSBuildEditorConfig.editorconfig
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\obj\Debug\net8.0\TestClient.AssemblyInfoInputs.cache
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\obj\Debug\net8.0\TestClient.AssemblyInfo.cs
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\obj\Debug\net8.0\TestClient.csproj.CoreCompileInputs.cache
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\obj\Debug\net8.0\TestClient.sourcelink.json
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\obj\Debug\net8.0\TestClient.dll
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\obj\Debug\net8.0\refint\TestClient.dll
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\obj\Debug\net8.0\TestClient.pdb
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\obj\Debug\net8.0\TestClient.genruntimeconfig.cache
+D:\prog\2 kurs\2 sem\linux\couse_work\Couse.Server\tests\TestClient\obj\Debug\net8.0\ref\TestClient.dll

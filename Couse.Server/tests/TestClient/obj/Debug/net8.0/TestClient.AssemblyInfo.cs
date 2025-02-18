@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("Couse.API")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("TestClient")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f50481cc51726c45c645f98987e5012ad7c16380")]
-[assembly: System.Reflection.AssemblyProductAttribute("Couse.API")]
-[assembly: System.Reflection.AssemblyTitleAttribute("Couse.API")]
+[assembly: System.Reflection.AssemblyProductAttribute("TestClient")]
+[assembly: System.Reflection.AssemblyTitleAttribute("TestClient")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Создано классом WriteCodeFragment MSBuild.
