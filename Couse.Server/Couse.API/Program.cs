@@ -84,7 +84,9 @@ class Program
             
         // отправляем заданному клиенту
         _clients[payload.receiverId].Send(Encoding.UTF8.GetBytes(httpResponse));
-        clientSocket.Close();
+        
+        
+        // clientSocket.Close();
     }
     
     private static (string senderId, string receiverId, string message) ParseSoapRequest(string request)
