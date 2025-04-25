@@ -53,7 +53,7 @@ class Program
                 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
                     <soap:Header>
                         <SenderId>{_senderId.ToString()}</SenderId>
-                        <ReceiverId>{_receiverId.ToString()}</ReceiverId>
+                        <ReceiverId>{_receiverId.ToString()}</ReceiverId>   
                     </soap:Header>
                     <soap:Body>
                         <SendMessage>
