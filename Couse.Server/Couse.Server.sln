@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Couse.API", "Couse.API\Couse.API.csproj", "{42A8700A-AD4C-4088-8E17-D6A44635DCA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Couse.Server", "Couse.Server\Couse.Server.csproj", "{42A8700A-AD4C-4088-8E17-D6A44635DCA3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Couse.Client", "Couse.Client\Couse.Client.csproj", "{9C20CD7A-64EE-44E4-AEB6-6EB3A58A512A}"
 EndProject
