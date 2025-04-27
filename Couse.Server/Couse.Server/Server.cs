@@ -130,20 +130,21 @@ public static class Server
             var geoJsonStr = http.GetStringAsync(geoUrl).Result;
             using var geoJsonDoc = System.Text.Json.JsonDocument.Parse(geoJsonStr);
             
-            // if (!geoJsonDoc.RootElement.TryGetProperty("results", out var results))
-            // {
-            //     SendXmlResponse(client, e, new Envelope<GetWeatherForCityResponse>
-            //     {
-            //         Body = new Body<GetWeatherForCityResponse>
-            //         {
-            //             Content = new GetWeatherForCityResponse
-            //             {
-            //                 Temperature = 123
-            //             }
-            //         }
-            //     });
-            //     return;
-            // }
+            if (!geoJsonDoc.RootElement.TryGetProperty("results", out var results))
+            {
+                SendXmlResponse(client, e, new Envelope<Fault>
+                {
+                    Body = new Body<Fault>
+                    {
+                        Content = new Fault
+                        {
+                            Code = "Client",
+                            Message = "Нет информации о погоде для данного региона"
+                        }
+                    }
+                });
+                return;
+            }
 
             SendXmlResponse(client, e, new Envelope<GetWeatherForCityResponse>
             {
