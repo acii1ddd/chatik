@@ -22,7 +22,7 @@ public static class Client
             Console.WriteLine("0. Выход");
             Console.WriteLine("1. Погода для заданного региона (2 недели)");
             Console.WriteLine("2. Погода сегодня (в текущем регионе)");
-            Console.WriteLine("3. История (когда восход/закат)");
+            //Console.WriteLine("3. История (когда восход/закат)");
             Console.Write("Выберите пункт: ");
             var choice = Console.ReadLine();
 
@@ -37,7 +37,6 @@ public static class Client
                     Console.ReadKey();
                     continue;
                 }
-
                 await GetWeatherForCity(city);
                 Console.WriteLine("Нажмите любую клавишу...");
                 Console.ReadKey();
