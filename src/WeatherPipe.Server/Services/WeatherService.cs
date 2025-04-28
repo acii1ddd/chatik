@@ -9,7 +9,7 @@ namespace Couse.API.Services;
 
 internal class WeatherService
 {
-    internal static Envelope<IResponse>? HandleWeatherRequest(string requestXmlString)
+    internal static Envelope<IResponse>? ProcessRequest(string requestXmlString)
     {
         if (string.IsNullOrEmpty(requestXmlString)) return null;
         

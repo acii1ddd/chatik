@@ -38,7 +38,7 @@ internal static class ReceiveHandler
             }
             
             var requestXmlString = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
-            var weatherResponse = WeatherService.HandleWeatherRequest(requestXmlString);
+            var weatherResponse = WeatherService.ProcessRequest(requestXmlString);
             
             if (weatherResponse is null)
             {

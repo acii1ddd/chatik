@@ -1,3 +1,4 @@
+using System.Text;
 using System.Xml.Serialization;
 
 namespace Course.Contracts.Contracts.Responses;
@@ -19,4 +20,20 @@ public class GetWeatherForCityResponse : IResponse
 
     [XmlElement("DailyForecast")]
     public List<WeatherDayResponse> DailyForecast { get; set; } = [];
+    
+    public override string ToString()
+    {
+        var forecastDetails = new StringBuilder();
+        forecastDetails.AppendLine($"Прогноз погоды для города {City}, {Country} на 2 недели:");
+        forecastDetails.AppendLine($"Координаты: широта {Latitude}, долгота {Longitude}\n");
+
+        foreach (var day in DailyForecast)
+        {
+            forecastDetails.AppendLine($"📅 {day.Date}:");
+            forecastDetails.AppendLine($"- 🌡️ Температура: от {(day.TempMin >= 0 ? "+" : "")}{day.TempMin}°C до {(day.TempMax >= 0 ? "+" : "")}{day.TempMax}°C");
+            forecastDetails.AppendLine($"- 🌧️ Осадки: {day.Precipitation}\n");
+        }
+
+        return forecastDetails.ToString();
+    }
 }
