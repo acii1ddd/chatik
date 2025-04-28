@@ -118,7 +118,7 @@ internal static class WeatherService
         // 2 недели (14 дней)
         for (var i = 0; i < 14; i++)
         {
-            var dateStr = DateTime.Parse(dates[i].GetString()!).ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("ru-RU"));
+            var dateStr = DateTime.Parse(dates[i].GetString()!).ToString("dd MMMM yyyy", new CultureInfo("ru-RU"));
 
             var tempMin = tempsMin[i].GetDouble();
             var tempMax = tempsMax[i].GetDouble();
