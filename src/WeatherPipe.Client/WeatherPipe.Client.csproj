@@ -5,10 +5,11 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>WeatherPipe.Client</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Course.Common\Course.Common.csproj" />
+      <ProjectReference Include="..\WeatherPipe.Common\WeatherPipe.Common.csproj" />
     </ItemGroup>
 
 </Project>

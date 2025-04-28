@@ -9,15 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Course.Common\Course.Common.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Models\" />
+      <ProjectReference Include="..\WeatherPipe.Common\WeatherPipe.Common.csproj" />
     </ItemGroup>
 
 </Project>

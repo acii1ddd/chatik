@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Couse.Server", "Couse.Server\Couse.Server.csproj", "{42A8700A-AD4C-4088-8E17-D6A44635DCA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherPipe.Server", "src\WeatherPipe.Server\WeatherPipe.Server.csproj", "{42A8700A-AD4C-4088-8E17-D6A44635DCA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Couse.Client", "Couse.Client\Couse.Client.csproj", "{9C20CD7A-64EE-44E4-AEB6-6EB3A58A512A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherPipe.Client", "src\WeatherPipe.Client\WeatherPipe.Client.csproj", "{9C20CD7A-64EE-44E4-AEB6-6EB3A58A512A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{76003D96-4766-4E08-AEDC-C4EEDDA78FB1}"
 EndProject
@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "git", "git", "{C6CBE1D6-3F3
 		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Course.Common", "Course.Common\Course.Common.csproj", "{12D09388-BB21-457D-9E43-0D0952C24DAC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherPipe.Common", "src\WeatherPipe.Common\WeatherPipe.Common.csproj", "{12D09388-BB21-457D-9E43-0D0952C24DAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

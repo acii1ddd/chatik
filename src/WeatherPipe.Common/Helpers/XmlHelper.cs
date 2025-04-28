@@ -1,7 +1,7 @@
 using System.Xml.Serialization;
 using Course.Contracts.Contracts.Serialize;
 
-namespace Course.Contracts;
+namespace Course.Contracts.Helpers;
 
 public static class XmlHelper
 {

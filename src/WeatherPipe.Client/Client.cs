@@ -2,10 +2,12 @@
 using System.Net.Sockets;
 using System.Text;
 using Course.Contracts;
-using Course.Contracts.Contracts;
+using Course.Contracts.Contracts.Requests;
+using Course.Contracts.Contracts.Responses;
 using Course.Contracts.Contracts.Serialize;
+using Course.Contracts.Helpers;
 
-namespace Couse.Client;
+namespace WeatherPipe.Client;
 
 public static class Client
 {
@@ -62,9 +64,9 @@ public static class Client
 
         try
         {
-            Console.WriteLine($"\nConnecting to {endPoint}...");
+            //Console.WriteLine($"\nConnecting to {endPoint}...");
             await clientSocket.ConnectAsync(endPoint);
-            Console.WriteLine($"Connected to {endPoint} successfully!.");
+            //Console.WriteLine($"Connected to {endPoint} successfully!.");
             
             var request = new Envelope<GetWeatherForCityRequest>
             {
@@ -103,7 +105,7 @@ public static class Client
             
             if (responseXmlStr.Contains("<Fault>"))
             {
-                var faultEnvelope = XmlHelper.XmlDeserialize<Fault>(responseXmlStr);
+                var faultEnvelope = XmlHelper.XmlDeserialize<FaultResponse>(responseXmlStr);
                 Console.WriteLine("Получена ошибка от сервера. Операция прервана.");
                 Console.WriteLine($"Код ошибки: {faultEnvelope?.Body.Content.Code}");
                 Console.WriteLine($"Сообщение: {faultEnvelope?.Body.Content.Message}");
@@ -132,12 +134,15 @@ public static class Client
         }
         finally
         {
-            if (clientSocket.Connected)
+            try
             {
-                clientSocket.Shutdown(SocketShutdown.Both);
+                ConnectionManager.CloseClient(clientSocket);
+                //Console.WriteLine("\nКлиент отключён.");
             }
-            clientSocket.Close();
-            Console.WriteLine("Connection closed.");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Warning] Ошибка при Shutdown: {ex.Message}");
+            }
         }
     }
 }
