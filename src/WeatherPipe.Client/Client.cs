@@ -1,7 +1,10 @@
 ﻿using Course.Contracts.Contracts.Requests;
 using Course.Contracts.Contracts.Responses;
+using Course.Contracts.Contracts.Responses.ForCity;
+using Course.Contracts.Contracts.Responses.ForToday;
 using Course.Contracts.Contracts.Serialize;
 using Course.Contracts.Helpers;
+using WeatherPipe.Client.Utils;
 
 namespace WeatherPipe.Client;
 
@@ -41,19 +44,59 @@ public static class Client
             }
             else if (choice == "2")
             {
-                //
+                await GetWeatherForToday();
+                Console.WriteLine("Нажмите любую клавишу...");
+                Console.ReadKey();
             }
             else if (choice == "0")
             {
                 Console.WriteLine("Выход...");
                 break; // выход из приложения
-            }
+            }   
             else
             {
                 Console.WriteLine("Неверный пункт меню. Нажмите любую клавишу...");
                 Console.ReadKey();
             }
         }
+    }
+
+    private static async Task GetWeatherForToday()
+    {
+        var userData = await Location.GetUserData();
+        
+        var request = new Envelope<GetWeatherForTodayRequest>
+        {
+            Body = new Body<GetWeatherForTodayRequest>
+            {
+                Content = new GetWeatherForTodayRequest
+                {
+                    RequestType = "GetWeatherForToday",
+                    Latitude = userData.Lat,
+                    Longitude = userData.Lon
+                }
+            }
+        };
+        
+        var xmlRequestStr = XmlHelper.SerializeToXml(request);
+        var xmlResponseStr = await RequestProcessor.SendRequestAsync(ServerIp, Port, xmlRequestStr);
+        
+        if (ErrorHandler.IsFaultResponse(xmlResponseStr))
+        {
+            var faultEnvelope = XmlHelper.XmlDeserialize<FaultResponse>(xmlResponseStr);
+            Console.WriteLine(faultEnvelope?.Body.Content);
+            return;
+        }
+        
+        var weatherForTodayEnvelope = XmlHelper.XmlDeserialize<GetWeatherForTodayResponse>(xmlResponseStr);
+        var weatherForToday = weatherForTodayEnvelope?.Body.Content;
+        if (weatherForToday is null)
+        {
+            Console.WriteLine($"Страна: {userData.Country}");
+            return;
+        }
+
+        Printer.PrintForecastForToday(weatherForToday, userData);
     }
 
     private static async Task GetWeatherForCity(string city)
@@ -64,7 +107,8 @@ public static class Client
             {
                 Content = new GetWeatherForCityRequest
                 {
-                    City = city
+                    City = city,
+                    RequestType = "GetWeatherForCity"
                 }
             }
         };
@@ -80,7 +124,7 @@ public static class Client
             return;
         }
         
-        var weatherResponseEnvelope = XmlHelper.XmlDeserialize<GetWeatherForCityResponse>(xmlResponseStr);
-        Console.WriteLine(weatherResponseEnvelope?.Body.Content);
+        var weatherForCityEnvelope = XmlHelper.XmlDeserialize<GetWeatherForCityResponse>(xmlResponseStr);
+        Console.WriteLine(weatherForCityEnvelope?.Body.Content);
     }
 }

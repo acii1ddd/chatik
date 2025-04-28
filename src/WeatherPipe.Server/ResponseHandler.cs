@@ -2,6 +2,8 @@ using System.Net.Sockets;
 using System.Text;
 using Course.Contracts;
 using Course.Contracts.Contracts.Responses;
+using Course.Contracts.Contracts.Responses.ForCity;
+using Course.Contracts.Contracts.Responses.ForToday;
 using Course.Contracts.Contracts.Serialize;
 using Course.Contracts.Helpers;
 
@@ -9,7 +11,6 @@ namespace Couse.API;
 
 internal static class ResponseHandler
 {
-    
     internal static void HandleResponse(Socket client, SocketAsyncEventArgs e, Envelope<IResponse> weatherResponse)
     {
         switch (weatherResponse.Body.Content)
@@ -19,6 +20,18 @@ internal static class ResponseHandler
                 var typedEnvelope = new Envelope<GetWeatherForCityResponse>
                 {
                     Body = new Body<GetWeatherForCityResponse>
+                    {
+                        Content = weatherContent
+                    }
+                };
+                SendXmlResponse(client, e, typedEnvelope);
+                break;
+            }
+            case GetWeatherForTodayResponse weatherContent:
+            {
+                var typedEnvelope = new Envelope<GetWeatherForTodayResponse>
+                {
+                    Body = new Body<GetWeatherForTodayResponse>
                     {
                         Content = weatherContent
                     }
@@ -44,7 +57,7 @@ internal static class ResponseHandler
     private static void SendXmlResponse<T>(Socket client, SocketAsyncEventArgs e, Envelope<T> xmlResponseEnvelope) where T : class
     {
         var xmlResponseStr = XmlHelper.SerializeToXml(xmlResponseEnvelope);
-        Console.WriteLine("\nResponse text: {0}", xmlResponseStr);
+        Console.WriteLine("\n\nResponse text: {0}", xmlResponseStr);
      
         var responseBytes = Encoding.UTF8.GetBytes(xmlResponseStr);
         e.SetBuffer(responseBytes, 0, responseBytes.Length);

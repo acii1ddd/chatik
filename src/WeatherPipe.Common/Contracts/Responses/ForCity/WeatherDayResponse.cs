@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace Course.Contracts.Contracts.Responses;
+namespace Course.Contracts.Contracts.Responses.ForCity;
 
 
 [XmlRoot("WeatherDay", Namespace = "http://tempuri.org/WeatherService")]

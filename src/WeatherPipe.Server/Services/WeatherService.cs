@@ -1,42 +1,72 @@
 using System.Globalization;
 using System.Text.Json;
-using Course.Contracts.Contracts.Requests;
 using Course.Contracts.Contracts.Responses;
-using Course.Contracts.Contracts.Serialize;
-using Course.Contracts.Helpers;
+using Course.Contracts.Contracts.Responses.ForCity;
+using Course.Contracts.Contracts.Responses.ForToday;
 
 namespace Couse.API.Services;
 
-internal class WeatherService
+internal static class WeatherService
 {
-    internal static Envelope<IResponse>? ProcessRequest(string requestXmlString)
+    internal static IResponse GetForecastForToday(double latitude, double longitude)
     {
-        if (string.IsNullOrEmpty(requestXmlString)) return null;
+        // логика запроса на weather api
+        using var http = new HttpClient();
+        var todayWeatherForecastUrl = "https://api.open-meteo.com/v1/forecast" +
+                                 $"?latitude={latitude.ToString(CultureInfo.InvariantCulture).Replace(',', '.')}" +
+                                 $"&longitude={longitude.ToString(CultureInfo.InvariantCulture).Replace(',', '.')}" +
+                                 "&current_weather=true" +
+                                 "&timezone=auto";
         
-        var envelopeRequest = XmlHelper.XmlDeserialize<GetWeatherForCityRequest>(requestXmlString);
-        var getWeatherForCityRequest = envelopeRequest?.Body.Content;
-            
-        Console.WriteLine($"Город = {getWeatherForCityRequest?.City}");
-            
+        Console.WriteLine("Запрос в {0}", todayWeatherForecastUrl);
+        
+        var forecastJsonStr = http.GetStringAsync(todayWeatherForecastUrl).Result;
+        
+        using var forecastJsonDoc = JsonDocument.Parse(forecastJsonStr);
+        var weatherRoot = forecastJsonDoc.RootElement;
+        var timeZone = weatherRoot.GetProperty("timezone").GetString() ?? string.Empty;
+        
+        var currentWeather = weatherRoot.GetProperty("current_weather");
+        var time = currentWeather.GetProperty("time").GetString() ?? string.Empty;
+        var interval = currentWeather.GetProperty("interval").GetInt32();
+        var temperature = currentWeather.GetProperty("temperature").GetDouble();
+        var windSpeed = currentWeather.GetProperty("windspeed").GetDouble();
+        var windDirection = currentWeather.GetProperty("winddirection").GetDouble();
+        var isDay = currentWeather.GetProperty("is_day").GetInt32();
+
+        return new GetWeatherForTodayResponse
+        {
+            Latitude = latitude,
+            Longitude = longitude,
+            TimeZone = timeZone,
+            Time = time,
+            Interval = interval,
+            Temperature = temperature,
+            WindSpeed = windSpeed,
+            WindDirection = windDirection,
+            IsDay = isDay
+        };
+    }
+    
+    internal static IResponse GetForecastForCity(string city)
+    {
         // логика запроса на weather api
         using var http = new HttpClient();
         var geoUrl = $"https://geocoding-api.open-meteo.com/v1/search" +
-                     $"?name={Uri.EscapeDataString(getWeatherForCityRequest?.City ?? string.Empty)}" +
+                     $"?name={Uri.EscapeDataString(city)}" +
                      $"&language=ru" +
                      $"&count=1";
-            
+                
         var geoJsonStr = http.GetStringAsync(geoUrl).Result;
         using var geoJsonDoc = JsonDocument.Parse(geoJsonStr);
-            
+                
         if (!geoJsonDoc.RootElement.TryGetProperty("results", out var results))
         {
-            return ResponseHelper.GetEnvelope<IResponse>(
-                new FaultResponse
-                {
-                    Code = "Client",
-                    Message = "Нет информации о погоде для данного региона"
-                }
-            );
+            return new FaultResponse
+            {
+                Code = "Client",
+                Message = "Нет информации о погоде для данного региона"
+            };
         }
 
         // первый из results
@@ -67,7 +97,7 @@ internal class WeatherService
         Console.WriteLine(weatherForecastUrl);
             
         var forecastJsonStr = http.GetStringAsync(weatherForecastUrl).Result;
-        using var forecastJsonDoc = System.Text.Json.JsonDocument.Parse(forecastJsonStr);
+        using var forecastJsonDoc = JsonDocument.Parse(forecastJsonStr);
             
         var weatherRoot = forecastJsonDoc.RootElement;
         var daily = weatherRoot.GetProperty("daily");
@@ -105,6 +135,6 @@ internal class WeatherService
             });
         }
 
-        return ResponseHelper.GetEnvelope<IResponse>(weatherResponse);
+        return weatherResponse;
     }
 }

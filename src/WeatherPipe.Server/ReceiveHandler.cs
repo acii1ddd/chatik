@@ -1,7 +1,6 @@
 using System.Net.Sockets;
 using System.Text;
 using Course.Contracts;
-using Couse.API.Services;
 
 namespace Couse.API;
 
@@ -38,17 +37,10 @@ internal static class ReceiveHandler
             }
             
             var requestXmlString = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
-            var weatherResponse = WeatherService.ProcessRequest(requestXmlString);
+            Console.WriteLine($"Получено: {requestXmlString}");
             
-            if (weatherResponse is null)
-            {
-                Console.WriteLine("Получен пустой запрос!");
-            }
-            else
-            {
-                Console.WriteLine($"Получено: {requestXmlString}");
-                ResponseHandler.HandleResponse(client, e, weatherResponse);
-            }
+            var weatherResponse = RequestProcessor.ProcessRequest(requestXmlString);
+            ResponseHandler.HandleResponse(client, e, weatherResponse);
         }
         else
         {
