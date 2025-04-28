@@ -20,7 +20,9 @@ public static class Client
             Console.Clear();
             Console.WriteLine("=== Weather Console ===");
             Console.WriteLine("0. Выход");
-            Console.WriteLine("1. Показать погоду для города");
+            Console.WriteLine("1. Погода для заданного региона (2 недели)");
+            Console.WriteLine("2. Погода сегодня (в текущем регионе)");
+            Console.WriteLine("3. История (когда восход/закат)");
             Console.Write("Выберите пункт: ");
             var choice = Console.ReadLine();
 
@@ -62,7 +64,7 @@ public static class Client
         {
             Console.WriteLine($"\nConnecting to {endPoint}...");
             await clientSocket.ConnectAsync(endPoint);
-            Console.WriteLine($"Connected to {endPoint} successfully!.\n\n");
+            Console.WriteLine($"Connected to {endPoint} successfully!.");
             
             var request = new Envelope<GetWeatherForCityRequest>
             {
@@ -75,15 +77,11 @@ public static class Client
                 }
             };
             
-            // var serializer = new XmlSerializer(typeof(Envelope<GetWeatherForCityRequest>));
-            // await using var sw = new StringWriter();
-            // serializer.Serialize(sw, request);
-            // var xmlRequest = sw.ToString();
             var xmlRequest = XmlHelper.SerializeToXml(request);
             
-            Console.WriteLine("Request: {0}", xmlRequest);
+            //Console.WriteLine("Request: {0}", xmlRequest);
             await clientSocket.SendAsync(Encoding.UTF8.GetBytes(xmlRequest), SocketFlags.None);
-            Console.WriteLine("\nRequest sent, waiting for response...");
+            Console.WriteLine("\nЗапрос отправлен, ожидание ответа...\n");
 
             var buffer = new byte[BufferSize];
             var sb = new StringBuilder();
@@ -91,7 +89,7 @@ public static class Client
             {
                 var bytesReceived = await clientSocket.ReceiveAsync(buffer, SocketFlags.None);
                 if (bytesReceived == 0)
-                    break; // сервер закрыл соединение
+                    break; // серве р закрыл соединение
 
                 var chunk = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
                 sb.Append(chunk);
@@ -100,8 +98,29 @@ public static class Client
                     break;
             }
 
-            var response = sb.ToString();
-            Console.WriteLine("\nResponse from server: {0}", response);
+            var responseXmlStr = sb.ToString();
+            //Console.WriteLine("\nResponse from server: {0}", responseXmlStr);
+            
+            if (responseXmlStr.Contains("<Fault>"))
+            {
+                var faultEnvelope = XmlHelper.XmlDeserialize<Fault>(responseXmlStr);
+                Console.WriteLine("Получена ошибка от сервера. Операция прервана.");
+                Console.WriteLine($"Код ошибки: {faultEnvelope?.Body.Content.Code}");
+                Console.WriteLine($"Сообщение: {faultEnvelope?.Body.Content.Message}");
+                return;
+            }
+            
+            var weatherResponseEnvelope = XmlHelper.XmlDeserialize<GetWeatherForCityResponse>(responseXmlStr);
+            var weatherResponse = weatherResponseEnvelope?.Body.Content;
+            
+            Console.WriteLine($"Прогноз погоды для города {weatherResponse?.City}, {weatherResponse?.Country} на 2 недели:");
+            Console.WriteLine($"Координаты: широта {weatherResponse?.Latitude}, долгота {weatherResponse?.Longitude}\n");
+            foreach (var day in weatherResponse?.DailyForecast!)
+            {
+                Console.WriteLine($"📅 {day.Date}:");
+                Console.WriteLine($"- 🌡️ Температура: от {(day.TempMin >= 0 ? "+" : "")}{day.TempMin}°C до {(day.TempMax >= 0 ? "+" : "")}{day.TempMax}°C");
+                Console.WriteLine($"- 🌧️ Осадки: {day.Precipitation}\n");
+            }
         }
         catch (SocketException e)
         {
